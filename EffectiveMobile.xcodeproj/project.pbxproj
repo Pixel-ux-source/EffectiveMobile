@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		1FD369802DC14CED00934FD3 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1FD3697F2DC14CED00934FD3 /* SnapKit */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		1FD367FF2DC0E86E00934FD3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -65,6 +69,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1FD369802DC14CED00934FD3 /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -125,6 +130,7 @@
 			);
 			name = EffectiveMobile;
 			packageProductDependencies = (
+				1FD3697F2DC14CED00934FD3 /* SnapKit */,
 			);
 			productName = EffectiveMobile;
 			productReference = 1FD367E52DC0E86D00934FD3 /* EffectiveMobile.app */;
@@ -208,6 +214,9 @@
 			);
 			mainGroup = 1FD367DC2DC0E86D00934FD3;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				1FD3697E2DC14CED00934FD3 /* XCRemoteSwiftPackageReference "SnapKit" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 1FD367E62DC0E86D00934FD3 /* Products */;
 			projectDirPath = "";
@@ -561,6 +570,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		1FD3697E2DC14CED00934FD3 /* XCRemoteSwiftPackageReference "SnapKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SnapKit/SnapKit#:~:text=snapkit.github.io/SnapKit/";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.7.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		1FD3697F2DC14CED00934FD3 /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1FD3697E2DC14CED00934FD3 /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 1FD367DD2DC0E86D00934FD3 /* Project object */;
 }
