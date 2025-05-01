@@ -22,10 +22,20 @@ final class TaskDataManager {
         appDelegate.persistentContainer.viewContext
     }
     
-    func createData() {
-        
+    // MARK: – Create
+    func createData(from dtoTodos: [Todo]) {
+        dtoTodos.forEach { dtoTodo in
+            let todos = Todos(context: context)
+            todos.id = dtoTodo.id
+            todos.todo = dtoTodo.todo
+            todos.completed = dtoTodo.completed
+            todos.userId = dtoTodo.userId
+            todos.createdAt = Date.now
+        }
+        appDelegate.saveContext()
     }
     
+    // MARK: – Read
     func fetchAll() -> [Todos] {
         let fetchRequest: NSFetchRequest<Todos> = Todos.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "id", ascending: true)]

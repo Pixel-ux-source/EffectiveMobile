@@ -9,13 +9,10 @@ import UIKit
 
 final class CheckBoxBtn: UIButton {
     // MARK: – Variables
-    var isCompleted: Bool
-    var completion: () -> ()
+    var isCompleted: Bool = false
     
     // MARK: – Lifecycle
-    init(frame: CGRect = .zero, _ isCompleted: Bool, _ completion: @escaping () -> ()) {
-        self.completion = completion
-        self.isCompleted = isCompleted
+    override init(frame: CGRect = .zero) {
         super.init(frame: frame)
         setupSettings()
     }
@@ -35,7 +32,7 @@ final class CheckBoxBtn: UIButton {
 
         addAction(UIAction(handler: { [weak self] _ in
             guard let self else { return }
-            self.completion()
+            isCompleted.toggle()
         }), for: .touchUpInside)
     }
 }

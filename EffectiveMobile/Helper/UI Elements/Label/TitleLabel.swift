@@ -9,11 +9,10 @@ import UIKit
 
 final class TitleLabel: UILabel {
     // MARK: – Variables
-    var isCompleted: Bool
+    var isCompleted: Bool = false
     
     // MARK: – Lifecycle
-    init(frame: CGRect = .zero, _ competion: @escaping () -> Bool) {
-        self.isCompleted = competion()
+    override init(frame: CGRect = .zero) {
         super.init(frame: frame)
         setupSettings()
     }
@@ -23,7 +22,6 @@ final class TitleLabel: UILabel {
     
     // MARK: – Setup Settings
     private func setupSettings() {
-        text = "Почитать книгу"
         textColor = .whiteCustom
         alpha = isCompleted ? 0.5 : 1
         textAlignment = .left

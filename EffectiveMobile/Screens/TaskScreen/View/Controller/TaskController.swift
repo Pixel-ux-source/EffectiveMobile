@@ -28,6 +28,7 @@ final class TaskController: UIViewController {
     private let tableView = TaskTableView()
     private let dataSource = TaskDataSource()
     private let tableDelegate = TaskTableDelegate()
+    private let networkService = NetworkService()
     
     // MARK: – Variables
     var presenter: TaskPresenterProtocol!
@@ -107,7 +108,13 @@ final class TaskController: UIViewController {
     
     private func configureTabBar() {
         let tabBar = coordinator.tabBar
-        tabBar.tabBar.backgroundColor = .grayCustom
+        
+        let appearance = UITabBarAppearance()
+        appearance.configureWithOpaqueBackground()
+        appearance.backgroundColor = .grayCustom
+        
+        tabBar.tabBar.standardAppearance = appearance
+        tabBar.tabBar.scrollEdgeAppearance = appearance
 
         tabBar.tabBar.addSubviews(taskLabel, btnCreateTask)
         
@@ -131,7 +138,24 @@ final class TaskController: UIViewController {
 
 extension TaskController: TaskViewProtocol {
     func setData(_ model: [Todos]) {
-        print("Change data success")
+        if model.isEmpty {
+            networkService.getData { response in
+                switch response {
+                case .success(let data):
+                    TaskDataManager.shared.createData(from: data)
+                    let newModel = TaskDataManager.shared.fetchAll()
+                    self.dataSource.model = newModel
+                    self.countTask = self.dataSource.model.count
+                    self.tableView.reloadData()
+                case .failure(let error):
+                    print("Error network: \(error.localizedDescription)")
+                }
+            }
+        } else {
+            dataSource.model = model
+            countTask = dataSource.model.count
+            tableView.reloadData()
+        }
     }
 }
 

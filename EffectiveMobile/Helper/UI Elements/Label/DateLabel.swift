@@ -20,7 +20,6 @@ final class DateLabel: UILabel {
     // MARK: – Setup Settings
     private func setupSettings() {
         font = UIFont(name: "SFProText-Regular", size: 12)
-        text = "09/10/24"
         textColor = .whiteCustom
         alpha = 0.5
         textAlignment = .left

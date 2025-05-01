@@ -9,11 +9,10 @@ import UIKit
 
 final class DescLabel: UILabel {
     // MARK: – Variables
-    var isCompleted: Bool
+    var isCompleted: Bool = false
     
     // MARK: – Lifecycle
-    init(frame: CGRect = .zero, _ competion: @escaping () -> Bool) {
-        self.isCompleted = competion()
+    override init(frame: CGRect = .zero) {
         super.init(frame: frame)
         setupSettings()
     }
@@ -23,7 +22,6 @@ final class DescLabel: UILabel {
     
     // MARK: – Setup Settings
     private func setupSettings() {
-        text = "Составить список необходимых продуктов для ужина. Не забыть проверить, что уже есть в холодильнике."
         font = UIFont(name: "SFProText-Regular", size: 12)
         textColor = .whiteCustom
         alpha = isCompleted ? 0.5 : 1

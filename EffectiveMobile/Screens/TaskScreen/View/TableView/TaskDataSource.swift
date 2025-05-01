@@ -11,14 +11,14 @@ final class TaskDataSource: NSObject, UITableViewDataSource {
     var model: [Todos] = []
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        4
+        model.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: TaskCell.id,for: indexPath) as? TaskCell else { fatalError("ERROR_TASK_CELL_DEQUEUE") }
+        let item = model[indexPath.row]
+        cell.setUI(title: item.todo, desc: item.todo, date: item.createdAt, completed: item.completed)
         
         return cell
     }
-    
-    
 }

@@ -15,10 +15,10 @@ final class TaskCell: UITableViewCell {
     }
     
     // MARK: – UI Elements
-    private lazy var titleLabel: UILabel = TitleLabel { false }
-    private lazy var descLabel: UILabel = DescLabel { false }
-    private lazy var dateLabel: UILabel = DateLabel()
-    private lazy var checkBoxBtn: UIButton = CheckBoxBtn(false) { print("Tapped") }
+    private lazy var titleLabel: TitleLabel = TitleLabel()
+    private lazy var descLabel: DescLabel = DescLabel()
+    private lazy var dateLabel: DateLabel = DateLabel()
+    private lazy var checkBoxBtn: CheckBoxBtn = CheckBoxBtn()
     
     private lazy var stackViewVertical: UIStackView = VerticalStack(spacing: 6, aligment: .leading) {
         [titleLabel,descLabel,dateLabel]
@@ -61,5 +61,16 @@ final class TaskCell: UITableViewCell {
             make.height.lessThanOrEqualTo(106)
             make.horizontalEdges.equalToSuperview().inset(20)
         }
+    }
+    
+    // MARK: – Set UI
+    func setUI(title: String?, desc: String?, date: Date?, completed: Bool) {
+        titleLabel.text = title
+        descLabel.text = desc
+        dateLabel.text = String(describing: date)
+        
+        titleLabel.isCompleted = completed
+        descLabel.isCompleted = completed
+        checkBoxBtn.isCompleted = completed
     }
 }
