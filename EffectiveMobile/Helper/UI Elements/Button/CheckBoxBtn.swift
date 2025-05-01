@@ -9,7 +9,15 @@ import UIKit
 
 final class CheckBoxBtn: UIButton {
     // MARK: – Variables
-    var isCompleted: Bool = false
+    var isCompleted: Bool = false {
+        didSet {
+            let imageName = isCompleted ? "checkmark.circle" : "circle"
+            setImage(UIImage(systemName: imageName), for: .normal)
+            tintColor = isCompleted ? UIColor.yellowCustom : UIColor.stroke
+        }
+    }
+    
+    var onToggle: ((Bool) -> ())?
     
     // MARK: – Lifecycle
     override init(frame: CGRect = .zero) {
@@ -22,17 +30,16 @@ final class CheckBoxBtn: UIButton {
     
     // MARK: – Setup Settings
     private func setupSettings() {
-        let imageName = isCompleted ? "checkmark.circle" : "circle"
-        setImage(UIImage(systemName: imageName), for: .normal)
         clipsToBounds = true
-        tintColor = isCompleted ? UIColor.yellowCustom : UIColor.stroke
         imageView?.contentMode = .scaleAspectFit
         contentVerticalAlignment = .fill
         contentHorizontalAlignment = .fill
+        isUserInteractionEnabled = true
+        isExclusiveTouch = true
 
         addAction(UIAction(handler: { [weak self] _ in
             guard let self else { return }
-            isCompleted.toggle()
+            self.onToggle?(self.isCompleted)
         }), for: .touchUpInside)
     }
 }

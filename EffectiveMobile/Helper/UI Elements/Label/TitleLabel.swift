@@ -9,7 +9,21 @@ import UIKit
 
 final class TitleLabel: UILabel {
     // MARK: – Variables
-    var isCompleted: Bool = false
+    var isCompleted: Bool = false {
+        didSet {
+            let attributedString = NSMutableAttributedString(string: self.text ?? "")
+
+            attributedString.addAttributes([
+                .font: UIFont(name: "SFPro-Medium", size: 16)!,
+                .kern: -0.43,
+                .strikethroughStyle: isCompleted ? NSUnderlineStyle.single.rawValue : NSUnderlineStyle.self,
+                .strikethroughColor: UIColor.whiteCustom
+            ], range: NSRange(location: 0, length: attributedString.length))
+            attributedText = attributedString
+            
+            alpha = isCompleted ? 0.5 : 1
+        }
+    }
     
     // MARK: – Lifecycle
     override init(frame: CGRect = .zero) {
@@ -23,22 +37,7 @@ final class TitleLabel: UILabel {
     // MARK: – Setup Settings
     private func setupSettings() {
         textColor = .whiteCustom
-        alpha = isCompleted ? 0.5 : 1
         textAlignment = .left
         numberOfLines = 1
-        
-        let attributedString = NSMutableAttributedString(string: self.text ?? "")
-        attributedString.addAttributes([
-            .font: UIFont(name: "SFPro-Medium", size: 16)!,
-            .kern: -0.43
-        ], range: NSRange(location: 0, length: attributedString.length))
-        
-        if isCompleted {
-            attributedString.addAttributes([
-                .strikethroughStyle: NSUnderlineStyle.single.rawValue,
-                .strikethroughColor: UIColor.whiteCustom
-            ], range: NSRange(location: 0, length: attributedString.length))
-        }
-        attributedText = attributedString
     }
 }

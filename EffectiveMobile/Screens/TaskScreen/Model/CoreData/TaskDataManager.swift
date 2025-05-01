@@ -46,4 +46,36 @@ final class TaskDataManager {
         }
         return []
     }
+    
+    // MARK: – Update
+    func updateData(with id: Int64, on completed: Bool, on todo: String? = nil) {
+        let fetchRequest: NSFetchRequest<Todos> = Todos.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id == %id", id)
+        do {
+            let todos = try context.fetch(fetchRequest)
+            
+            if let todo {
+                todos.first?.todo = todo
+            } else {
+                todos.first?.completed = completed
+            }
+        } catch let error as NSError {
+            print("Error update data: \(error.localizedDescription)")
+        }
+        appDelegate.saveContext()
+    }
+    
+    // MARK: – Delete
+    func delete(with id: Int64) {
+        let fetchRequest: NSFetchRequest<Todos> = Todos.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "id = %id", id)
+        
+        do {
+            guard let todo = try context.fetch(fetchRequest).first else { return }
+            context.delete(todo)
+        } catch let error as NSError {
+            print("Error delete data: \(error.localizedDescription)")
+        }
+        appDelegate.saveContext()
+    }
 }

@@ -72,9 +72,11 @@ final class TaskController: UIViewController {
         
         tableView.tableHeaderView = UIView()
         tableView.tableFooterView = UIView()
-                
+        
         tableView.dataSource = dataSource
         tableView.delegate = tableDelegate
+        
+        dataSource.delegateTaskCell = self
     }
     
     private func configureNavigationBar() {
@@ -162,5 +164,14 @@ extension TaskController: TaskViewProtocol {
 extension TaskController: UISearchResultsUpdating {
     func updateSearchResults(for searchController: UISearchController) {
         
+    }
+}
+
+extension TaskController: TaskCellDelegate {
+    func taskCell(_ cell: TaskCell, didToggleCompleted isCompleted: Bool) {
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+        let id = dataSource.model[indexPath.row].id
+        TaskDataManager.shared.updateData(with: id, on: isCompleted)
+        tableView.reloadRows(at: [indexPath], with: .fade)
     }
 }

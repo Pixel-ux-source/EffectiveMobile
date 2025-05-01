@@ -9,7 +9,11 @@ import UIKit
 
 final class DescLabel: UILabel {
     // MARK: – Variables
-    var isCompleted: Bool = false
+    var isCompleted: Bool = false {
+        didSet {
+            alpha = isCompleted ? 0.5 : 1
+        }
+    }
     
     // MARK: – Lifecycle
     override init(frame: CGRect = .zero) {
@@ -24,7 +28,6 @@ final class DescLabel: UILabel {
     private func setupSettings() {
         font = UIFont(name: "SFProText-Regular", size: 12)
         textColor = .whiteCustom
-        alpha = isCompleted ? 0.5 : 1
         textAlignment = .left
         numberOfLines = 2
     }

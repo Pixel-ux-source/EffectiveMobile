@@ -8,11 +8,18 @@
 import UIKit
 import SnapKit
 
+protocol TaskCellDelegate: AnyObject {
+    func taskCell(_ cell: TaskCell, didToggleCompleted isCompleted: Bool)
+}
+
 final class TaskCell: UITableViewCell {
     // MARK: – Cell ID
     static var id: String {
         String(describing: self)
     }
+    
+    // MARK: – Delegate
+    weak var delegate: TaskCellDelegate?
     
     // MARK: – UI Elements
     private lazy var titleLabel: TitleLabel = TitleLabel()
@@ -36,6 +43,17 @@ final class TaskCell: UITableViewCell {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: – Hit Test
+    override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        let view = super.hitTest(point, with: event)
+        
+        if let view = view, view.isDescendant(of: checkBoxBtn) {
+            return view
+        }
+        
+        return super.hitTest(point, with: event)
     }
     
     // MARK: – Configuration
@@ -64,13 +82,19 @@ final class TaskCell: UITableViewCell {
     }
     
     // MARK: – Set UI
-    func setUI(title: String?, desc: String?, date: Date?, completed: Bool) {
+    func setUI(title: String?, desc: String?, date: String, completed: Bool) {
         titleLabel.text = title
         descLabel.text = desc
-        dateLabel.text = String(describing: date)
+        dateLabel.text = date
         
         titleLabel.isCompleted = completed
         descLabel.isCompleted = completed
         checkBoxBtn.isCompleted = completed
+        
+        checkBoxBtn.onToggle = { [weak self] _ in
+            guard let self else { return }
+            self.checkBoxBtn.isCompleted.toggle()
+            self.delegate?.taskCell(self, didToggleCompleted: self.checkBoxBtn.isCompleted)
+        }
     }
 }
