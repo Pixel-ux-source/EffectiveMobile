@@ -8,6 +8,7 @@
 import UIKit
 
 protocol CoordinatorProtocol: AnyObject {
+    var tabBar: UITabBarController { get }
     var navigator: UINavigationController { get }
     
     func start()

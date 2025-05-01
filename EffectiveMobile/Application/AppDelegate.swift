@@ -10,9 +10,6 @@ import CoreData
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
-
-
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         return true
@@ -51,6 +48,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if context.hasChanges {
             do {
                 try context.save()
+                print("✅ Save context success")
             } catch let error as NSError{
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
