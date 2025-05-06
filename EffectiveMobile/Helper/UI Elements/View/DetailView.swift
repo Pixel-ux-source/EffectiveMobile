@@ -54,8 +54,12 @@ final class DetailView: UIView, UITextViewDelegate {
     private func updateUI() {
         DispatchQueue.main.async {
             guard let model = self.model else { return }
-            self.titleTextView.configure(with: model.todoTitle)
-            self.descTextView.configure(with: model.todoDesc)
+            
+            let title = model.todoTitle
+            let desc = model.todoDesc
+            
+            self.titleTextView.configure(with: title)
+            self.descTextView.configure(with: desc)
             self.dateLabel.text = model.todoDate
         }
     }

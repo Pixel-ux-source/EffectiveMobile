@@ -70,6 +70,7 @@ final class TaskController: UIViewController {
         tableView.separatorInset = .init(top: 0, left: 20, bottom: 0, right: -20)
         tableView.separatorStyle = .singleLine
         tableView.separatorColor = .stroke
+        tableView.keyboardDismissMode = .onDrag
         
         tableView.tableHeaderView = UIView()
         tableView.tableFooterView = UIView()
@@ -114,6 +115,7 @@ final class TaskController: UIViewController {
     private func configureSearchController() {
         navigationItem.searchController = SearchConfiguration.make(for: self)
         definesPresentationContext = true
+        navigationItem.searchController?.delegate = self
     }
     
     private func configureTabBar() {
@@ -137,6 +139,19 @@ final class TaskController: UIViewController {
             make.centerY.equalTo(tabBar.tabBar.snp_centerYWithinMargins)
             make.trailing.equalTo(tabBar.tabBar.snp_trailingMargin).offset(-20)
             make.width.height.equalTo(24)
+        }
+    }
+    
+    // MARK: – Reload Screen
+    func reloadScreen() {
+        DispatchQueue.global(qos: .userInitiated).async {
+            let model = TaskDataManager.shared.fetchAll()
+            DispatchQueue.main.async {
+                self.dataSource.model = model
+                self.tableDelegate.model = model
+                self.countTask = model.count
+                self.tableView.reloadData()
+            }
         }
     }
     
@@ -171,7 +186,7 @@ extension TaskController: TaskViewProtocol {
     }
 }
 
-extension TaskController: UISearchResultsUpdating {
+extension TaskController: UISearchResultsUpdating, UISearchControllerDelegate {
     func updateSearchResults(for searchController: UISearchController) {
         guard let query = searchController.searchBar.text else {
             dataSource.model = []
@@ -182,13 +197,18 @@ extension TaskController: UISearchResultsUpdating {
             guard let self else { return }
             DispatchQueue.main.async {
                 self.dataSource.model = model
+                self.tableDelegate.model = model
                 self.tableView.reloadData()
             }
         }
     }
+    
+    func didDismissSearchController(_ searchController: UISearchController) {
+        reloadScreen()
+    }
 }
 
-extension TaskController: TaskCellDelegate {
+extension TaskController: TaskCellDelegate  {
     func taskCell(_ cell: TaskCell, didToggleCompleted isCompleted: Bool) {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
         let id = dataSource.model[indexPath.row].id

@@ -47,8 +47,8 @@ final class TaskDataManager {
             
             let todos = Todos(context: context)
             todos.id = maxId
-            todos.desc = title
-            todos.title = desc
+            todos.title = title
+            todos.desc = desc
             todos.completed = false
             todos.userId = Int64.random(in: 1...1000)
             todos.createdAt = Date.now

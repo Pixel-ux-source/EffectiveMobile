@@ -38,13 +38,17 @@ final class TaskDetailController: UIViewController {
     
     // MARK: – Update Model
     private func updateModel() {
-        guard let id = model?.id,
-              let title = model?.todoTitle,
-              let desc = model?.todoDesc else { return }
+        guard let title = model?.todoTitle.trimmingCharacters(in: .whitespacesAndNewlines),
+              let desc = model?.todoDesc.trimmingCharacters(in: .whitespacesAndNewlines),
+              !title.isEmpty && !desc.isEmpty else { return }
+        guard let id = model?.id else { return }
+
         if id == 0 {
             TaskDataManager.shared.createNewData(title: title, desc: desc)
+            coordinator.reloadTaskController()
         } else {
             TaskDataManager.shared.update(with: id, on: [.title(title), .desc(desc)])
+            coordinator.reloadTaskController()
         }
     }
     

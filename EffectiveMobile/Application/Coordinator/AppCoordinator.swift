@@ -31,3 +31,11 @@ final class AppCoordinator: CoordinatorProtocol {
         navigator.pushViewController(vc, animated: true)
     }
 }
+
+extension AppCoordinator {
+    func reloadTaskController() {
+        if let taskController = navigator.viewControllers.first(where: { $0 is TaskController }) as? TaskController {
+            taskController.reloadScreen()
+        }
+    }
+}
