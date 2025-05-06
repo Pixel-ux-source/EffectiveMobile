@@ -29,6 +29,7 @@ final class TaskController: UIViewController {
     private let dataSource = TaskDataSource()
     private let tableDelegate = TaskTableDelegate()
     private let networkService = NetworkService()
+    private let viewModel = TaskViewModel()
     
     // MARK: – Variables
     var presenter: TaskPresenterProtocol!
@@ -55,7 +56,7 @@ final class TaskController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         configureNavigationBar()
-        countTask = dataSource.model.count
+        countTask = viewModel.model.count
         tableView.reloadData()
     }
     
@@ -81,7 +82,10 @@ final class TaskController: UIViewController {
         tableView.estimatedRowHeight = 106
         
         dataSource.delegateTaskCell = self
+        tableDelegate.delegate = self
         tableDelegate.coordinator = coordinator
+        dataSource.viewModel = viewModel
+        tableDelegate.viewModel = viewModel
     }
     
     private func configureNavigationBar() {
@@ -147,8 +151,7 @@ final class TaskController: UIViewController {
         DispatchQueue.global(qos: .userInitiated).async {
             let model = TaskDataManager.shared.fetchAll()
             DispatchQueue.main.async {
-                self.dataSource.model = model
-                self.tableDelegate.model = model
+                self.viewModel.model = model
                 self.countTask = model.count
                 self.tableView.reloadData()
             }
@@ -169,18 +172,16 @@ extension TaskController: TaskViewProtocol {
                 case .success(let data):
                     TaskDataManager.shared.createDataJson(from: data)
                     let newModel = TaskDataManager.shared.fetchAll()
-                    self.dataSource.model = newModel
-                    self.tableDelegate.model = newModel
-                    self.countTask = self.dataSource.model.count
+                    self.viewModel.model = newModel
+                    self.countTask = self.viewModel.model.count
                     self.tableView.reloadData()
                 case .failure(let error):
                     print("Error network: \(error.localizedDescription)")
                 }
             }
         } else {
-            dataSource.model = model
-            tableDelegate.model = model
-            countTask = dataSource.model.count
+            self.viewModel.model = model
+            countTask = self.viewModel.model.count
             tableView.reloadData()
         }
     }
@@ -189,15 +190,14 @@ extension TaskController: TaskViewProtocol {
 extension TaskController: UISearchResultsUpdating, UISearchControllerDelegate {
     func updateSearchResults(for searchController: UISearchController) {
         guard let query = searchController.searchBar.text else {
-            dataSource.model = []
+            viewModel.model = []
             return
         }
         
         TaskDataManager.shared.searchData(with: query) { [weak self] model in
             guard let self else { return }
             DispatchQueue.main.async {
-                self.dataSource.model = model
-                self.tableDelegate.model = model
+                self.viewModel.model = model
                 self.tableView.reloadData()
             }
         }
@@ -211,8 +211,14 @@ extension TaskController: UISearchResultsUpdating, UISearchControllerDelegate {
 extension TaskController: TaskCellDelegate  {
     func taskCell(_ cell: TaskCell, didToggleCompleted isCompleted: Bool) {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
-        let id = dataSource.model[indexPath.row].id
+        let id = viewModel.model[indexPath.row].id
         TaskDataManager.shared.update(with: id, on: [.completed(isCompleted)])
         tableView.reloadRows(at: [indexPath], with: .fade)
+    }
+}
+
+extension TaskController: TaskTableDelegateProtocol {
+    func didUpdateCount(at count: Int) {
+        countTask = count
     }
 }

@@ -59,7 +59,7 @@ final class TaskCell: UITableViewCell {
     // MARK: – Configuration
     private func configureView() {
         contentView.backgroundColor = .clear
-        backgroundColor = .clear
+        backgroundColor = .blackCustom
         selectionStyle = .none
     }
     
