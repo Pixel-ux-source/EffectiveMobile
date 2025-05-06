@@ -8,13 +8,15 @@
 import UIKit
 
 final class TaskTableDelegate: NSObject, UITableViewDelegate {
+    var coordinator: AppCoordinator!
+    var model: [Todos] = []
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        106
+        UITableView.automaticDimension
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let cell = tableView.cellForRow(at: indexPath) else { return }
-        
         UIView.animate(withDuration: 0.1, animations: {
             cell.alpha = 0.5
         }) { _ in
@@ -22,7 +24,13 @@ final class TaskTableDelegate: NSObject, UITableViewDelegate {
                 cell.alpha = 1.0
             }
         }
-
         tableView.deselectRow(at: indexPath, animated: false)
+        
+        let item = model[indexPath.row]
+        let title = item.title ?? ""
+        let desc = item.desc ?? ""
+        let date = item.createdAt.formattedDate()
+        let id = item.id
+        coordinator.openToTaskDetailScreen(id, title, desc, date)
     }
 }

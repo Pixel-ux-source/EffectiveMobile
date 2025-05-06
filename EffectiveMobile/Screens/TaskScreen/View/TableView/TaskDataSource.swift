@@ -18,7 +18,7 @@ final class TaskDataSource: NSObject, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: TaskCell.id,for: indexPath) as? TaskCell else { fatalError("ERROR_TASK_CELL_DEQUEUE") }
         let item = model[indexPath.row]
-        cell.setUI(title: item.todo, desc: item.todo, date: item.createdAt.formattedDate(), completed: item.completed)
+        cell.setUI(title: item.title, desc: item.desc, date: item.createdAt.formattedDate(), completed: item.completed)
         
         cell.delegate = delegateTaskCell
         
