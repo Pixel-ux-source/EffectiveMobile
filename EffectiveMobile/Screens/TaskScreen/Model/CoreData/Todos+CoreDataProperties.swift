@@ -19,7 +19,8 @@ extension Todos {
     }
 
     @NSManaged public var id: Int64
-    @NSManaged public var todo: String?
+    @NSManaged public var title: String?
+    @NSManaged public var desc: String?
     @NSManaged public var completed: Bool
     @NSManaged public var userId: Int64
     @NSManaged public var createdAt: Date?

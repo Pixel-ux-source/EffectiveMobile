@@ -23,11 +23,12 @@ final class TaskDataManager {
     }
     
     // MARK: – Create
-    func createData(from dtoTodos: [Todo]) {
+    func createDataJson(from dtoTodos: [Todo]) {
         dtoTodos.forEach { dtoTodo in
             let todos = Todos(context: context)
             todos.id = dtoTodo.id
-            todos.todo = dtoTodo.todo
+            todos.title = dtoTodo.todo
+            todos.desc = dtoTodo.todo
             todos.completed = dtoTodo.completed
             todos.userId = dtoTodo.userId
             todos.createdAt = Date.now
@@ -35,10 +36,33 @@ final class TaskDataManager {
         appDelegate.saveContext()
     }
     
+    func createNewData(title: String? = nil, desc: String? = nil) {
+        let fetchRequest: NSFetchRequest<Todos> = Todos.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "id", ascending: false)]
+        fetchRequest.fetchLimit = 1
+        
+        do {
+            guard let object = try context.fetch(fetchRequest).first else { return }
+            let maxId: Int64 = object.id + 1
+            
+            let todos = Todos(context: context)
+            todos.id = maxId
+            todos.title = title
+            todos.desc = desc
+            todos.completed = false
+            todos.userId = Int64.random(in: 1...1000)
+            todos.createdAt = Date.now
+            
+        } catch let error as NSError {
+            print("Error create new data: \(error.localizedDescription)")
+        }
+        appDelegate.saveContext()
+    }
+    
     // MARK: – Read
     func fetchAll() -> [Todos] {
         let fetchRequest: NSFetchRequest<Todos> = Todos.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "id", ascending: true)]
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "createdAt", ascending: false)]
         do {
             return try context.fetch(fetchRequest)
         } catch let error as NSError {
@@ -47,18 +71,30 @@ final class TaskDataManager {
         return []
     }
     
+    func searchData(with query: String, completion: @escaping ([Todos]) -> ()) {
+        let fetchRequest:NSFetchRequest<Todos> = Todos.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "title CONTAINS[cd] %@", query)
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "createdAt", ascending: false)]
+        
+        do {
+            let result = try context.fetch(fetchRequest)
+            let object = result.map { context.object(with: $0.objectID) } as! [Todos]
+            completion(object)
+        } catch let error as NSError {
+            completion([])
+            print("Error search data: \(error.localizedDescription)")
+        }
+    }
+    
     // MARK: – Update
-    func updateData(with id: Int64, on completed: Bool, on todo: String? = nil) {
+    func update(with id: Int64, on changes: [EnumTodosUpdate]) {
         let fetchRequest: NSFetchRequest<Todos> = Todos.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "id == %id", id)
+        fetchRequest.fetchLimit = 1
+        
         do {
-            let todos = try context.fetch(fetchRequest)
-            
-            if let todo {
-                todos.first?.todo = todo
-            } else {
-                todos.first?.completed = completed
-            }
+            guard let todo = try context.fetch(fetchRequest).first else { return }
+            changes.forEach { $0.apply(todo) }
         } catch let error as NSError {
             print("Error update data: \(error.localizedDescription)")
         }

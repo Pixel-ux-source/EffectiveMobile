@@ -30,6 +30,7 @@ struct SearchConfiguration {
         
         searchController.searchBar.tintColor = .yellowCustom
         searchController.searchBar.barTintColor = .grayCustom
+        searchController.searchBar.keyboardAppearance = .dark
 
         searchController.searchResultsUpdater = vc
         searchController.obscuresBackgroundDuringPresentation = false

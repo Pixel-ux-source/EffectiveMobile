@@ -12,23 +12,21 @@ protocol TaskViewProtocol: AnyObject {
 }
 
 protocol TaskPresenterProtocol: AnyObject {
-    var view: TaskViewProtocol? { get set }
-    var model: [Todos] { get set }
-    
+    init(view: TaskViewProtocol, model: [Todos])
     func showData()
 }
 
 final class TaskPresenter: TaskPresenterProtocol {
-    weak var view: (TaskViewProtocol)?
-    var model: [Todos]
+    private let view: (TaskViewProtocol)
+    private let model: [Todos]
     
-    init(view: TaskViewProtocol? = nil, model: [Todos]) {
+    init(view: TaskViewProtocol, model: [Todos]) {
         self.view = view
         self.model = model
     }
     
     func showData() {
-        view?.setData(model)
+        view.setData(model)
     }
     
     

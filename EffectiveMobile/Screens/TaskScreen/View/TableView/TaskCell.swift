@@ -59,7 +59,7 @@ final class TaskCell: UITableViewCell {
     // MARK: – Configuration
     private func configureView() {
         contentView.backgroundColor = .clear
-        backgroundColor = .clear
+        backgroundColor = .blackCustom
         selectionStyle = .none
     }
     
@@ -75,8 +75,7 @@ final class TaskCell: UITableViewCell {
         }
         
         stackViewHorizontal.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.height.lessThanOrEqualTo(106)
+            make.verticalEdges.equalToSuperview().inset(12)
             make.horizontalEdges.equalToSuperview().inset(20)
         }
     }
