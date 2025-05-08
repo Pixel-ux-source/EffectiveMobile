@@ -43,7 +43,7 @@ final class TaskController: UIViewController {
         let word = RussianWordHelper.taskWordForm(for: countTask)
         taskLabel.text = "\(countTask) \(word)"
     }
-
+    
     // MARK: – Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,6 +58,10 @@ final class TaskController: UIViewController {
         configureNavigationBar()
         countTask = viewModel.count
         tableView.reloadData()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
     }
     
     // MARK: – Configuration
@@ -168,13 +172,20 @@ final class TaskController: UIViewController {
 extension TaskController: TaskViewProtocol {
     func setData(_ model: [Todos]) {
         if model.isEmpty {
+            DispatchQueue.main.async {
+                self.coordinator.startLoader(over: self)
+            }
             networkService.getData { response in
                 switch response {
                 case .success(let data):
                     TaskDataManager.shared.createDataJson(from: data) {
                         self.reloadScreen()
+                        self.coordinator.hideLoader()
                     }
                 case .failure(let error):
+                    DispatchQueue.main.async {
+                        self.coordinator.hideLoader()
+                    }
                     print("Error network: \(error.localizedDescription)")
                 }
             }
