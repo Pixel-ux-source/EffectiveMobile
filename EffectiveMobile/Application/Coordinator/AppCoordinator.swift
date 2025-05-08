@@ -17,10 +17,11 @@ final class AppCoordinator: CoordinatorProtocol {
     }
     
     func start() {
-        let vc = TaskBuilder.build()
-        vc.coordinator = self
-        vc.view.backgroundColor = .blackCustom
-        navigator.pushViewController(vc, animated: false)
+        TaskBuilder.build { vc in
+            vc.coordinator = self
+            vc.view.backgroundColor = .blackCustom
+            self.navigator.pushViewController(vc, animated: false)
+        }
     }
     
     func openToTaskDetailScreen(_ id: Int64, _ title: String, _ desc: String, _ date: String) {

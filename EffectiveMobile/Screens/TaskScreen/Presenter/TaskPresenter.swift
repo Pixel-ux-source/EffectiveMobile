@@ -28,6 +28,4 @@ final class TaskPresenter: TaskPresenterProtocol {
     func showData() {
         view.setData(model)
     }
-    
-    
 }
