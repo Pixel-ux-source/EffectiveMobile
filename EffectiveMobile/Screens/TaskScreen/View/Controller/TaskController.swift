@@ -43,7 +43,7 @@ final class TaskController: UIViewController {
         let word = RussianWordHelper.taskWordForm(for: countTask)
         taskLabel.text = "\(countTask) \(word)"
     }
-
+    
     // MARK: – Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -56,8 +56,12 @@ final class TaskController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         configureNavigationBar()
-        countTask = viewModel.model.count
+        countTask = viewModel.count
         tableView.reloadData()
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
     }
     
     // MARK: – Configuration
@@ -148,14 +152,15 @@ final class TaskController: UIViewController {
     
     // MARK: – Reload Screen
     func reloadScreen() {
-        DispatchQueue.global(qos: .userInitiated).async {
-            let model = TaskDataManager.shared.fetchAll()
-            DispatchQueue.main.async {
-                self.viewModel.model = model
-                self.countTask = model.count
-                self.tableView.reloadData()
-            }
+        TaskDataManager.shared.fetchAll { newModel in
+            self.viewModel.model = newModel
+            self.updateUI()
         }
+    }
+    // MARK: – Update UI
+    private func updateUI() {
+        countTask = viewModel.count
+        tableView.reloadData()
     }
     
     // MARK: – @OBJC Func
@@ -167,21 +172,26 @@ final class TaskController: UIViewController {
 extension TaskController: TaskViewProtocol {
     func setData(_ model: [Todos]) {
         if model.isEmpty {
+            DispatchQueue.main.async {
+                self.coordinator.startLoader(over: self)
+            }
             networkService.getData { response in
                 switch response {
                 case .success(let data):
-                    TaskDataManager.shared.createDataJson(from: data)
-                    let newModel = TaskDataManager.shared.fetchAll()
-                    self.viewModel.model = newModel
-                    self.countTask = self.viewModel.model.count
-                    self.tableView.reloadData()
+                    TaskDataManager.shared.createDataJson(from: data) {
+                        self.reloadScreen()
+                        self.coordinator.hideLoader()
+                    }
                 case .failure(let error):
+                    DispatchQueue.main.async {
+                        self.coordinator.hideLoader()
+                    }
                     print("Error network: \(error.localizedDescription)")
                 }
             }
         } else {
             self.viewModel.model = model
-            countTask = self.viewModel.model.count
+            countTask = self.viewModel.count
             tableView.reloadData()
         }
     }
@@ -190,7 +200,7 @@ extension TaskController: TaskViewProtocol {
 extension TaskController: UISearchResultsUpdating, UISearchControllerDelegate {
     func updateSearchResults(for searchController: UISearchController) {
         guard let query = searchController.searchBar.text else {
-            viewModel.model = []
+            reloadScreen()
             return
         }
         
@@ -212,8 +222,9 @@ extension TaskController: TaskCellDelegate  {
     func taskCell(_ cell: TaskCell, didToggleCompleted isCompleted: Bool) {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
         let id = viewModel.model[indexPath.row].id
-        TaskDataManager.shared.update(with: id, on: [.completed(isCompleted)])
-        tableView.reloadRows(at: [indexPath], with: .fade)
+        TaskDataManager.shared.update(with: id, on: [.completed(isCompleted)]) {
+            self.tableView.reloadRows(at: [indexPath], with: .fade)
+        }
     }
 }
 

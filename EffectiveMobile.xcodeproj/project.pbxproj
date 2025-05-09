@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1FC59B832DC35BA1006807FB /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 1FC59B822DC35BA1006807FB /* Alamofire */; };
 		1FD369802DC14CED00934FD3 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 1FD3697F2DC14CED00934FD3 /* SnapKit */; };
+		1FF7494A2DCCDE5100E48762 /* Lottie in Frameworks */ = {isa = PBXBuildFile; productRef = 1FF749492DCCDE5100E48762 /* Lottie */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +73,7 @@
 			files = (
 				1FD369802DC14CED00934FD3 /* SnapKit in Frameworks */,
 				1FC59B832DC35BA1006807FB /* Alamofire in Frameworks */,
+				1FF7494A2DCCDE5100E48762 /* Lottie in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -134,6 +136,7 @@
 			packageProductDependencies = (
 				1FD3697F2DC14CED00934FD3 /* SnapKit */,
 				1FC59B822DC35BA1006807FB /* Alamofire */,
+				1FF749492DCCDE5100E48762 /* Lottie */,
 			);
 			productName = EffectiveMobile;
 			productReference = 1FD367E52DC0E86D00934FD3 /* EffectiveMobile.app */;
@@ -220,6 +223,7 @@
 			packageReferences = (
 				1FD3697E2DC14CED00934FD3 /* XCRemoteSwiftPackageReference "SnapKit" */,
 				1FC59B812DC35BA1006807FB /* XCRemoteSwiftPackageReference "Alamofire" */,
+				1FF749482DCCDE5100E48762 /* XCRemoteSwiftPackageReference "lottie-ios" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 1FD367E62DC0E86D00934FD3 /* Products */;
@@ -592,6 +596,14 @@
 				minimumVersion = 5.7.1;
 			};
 		};
+		1FF749482DCCDE5100E48762 /* XCRemoteSwiftPackageReference "lottie-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/airbnb/lottie-ios";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.5.1;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -604,6 +616,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 1FD3697E2DC14CED00934FD3 /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
+		};
+		1FF749492DCCDE5100E48762 /* Lottie */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1FF749482DCCDE5100E48762 /* XCRemoteSwiftPackageReference "lottie-ios" */;
+			productName = Lottie;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

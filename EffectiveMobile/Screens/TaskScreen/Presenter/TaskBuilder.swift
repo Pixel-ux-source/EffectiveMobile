@@ -8,15 +8,16 @@
 import Foundation
 
 protocol TaskBuilderProtocol: AnyObject {
-    static func build() -> TaskController
+    static func build(_ completion: @escaping(TaskController) -> ())
 }
 
 final class TaskBuilder: TaskBuilderProtocol {
-    static func build() -> TaskController {
+    static func build(_ completion: @escaping (TaskController) -> ()) {
         let view = TaskController()
-        let model = TaskDataManager.shared.fetchAll()
-        let presenter = TaskPresenter(view: view, model: model)
-        view.presenter = presenter
-        return view
+        TaskDataManager.shared.fetchAll { model in
+            let presenter = TaskPresenter(view: view, model: model)
+            view.presenter = presenter
+            completion(view)
+        }
     }
 }

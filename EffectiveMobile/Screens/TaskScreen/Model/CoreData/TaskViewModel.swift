@@ -9,4 +9,5 @@ import UIKit
 
 final class TaskViewModel {
     var model: [Todos] = []
+    var count: Int { model.count }
 }

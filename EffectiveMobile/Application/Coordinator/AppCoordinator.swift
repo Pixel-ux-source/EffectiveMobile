@@ -10,6 +10,7 @@ import UIKit
 final class AppCoordinator: CoordinatorProtocol {
     var tabBar: UITabBarController
     var navigator: UINavigationController
+    private var loaderVC: LoaderController?
     
     init(tabBar: UITabBarController, navigator: UINavigationController) {
         self.tabBar = tabBar
@@ -17,10 +18,26 @@ final class AppCoordinator: CoordinatorProtocol {
     }
     
     func start() {
-        let vc = TaskBuilder.build()
-        vc.coordinator = self
-        vc.view.backgroundColor = .blackCustom
-        navigator.pushViewController(vc, animated: false)
+        TaskBuilder.build { vc in
+            vc.coordinator = self
+            vc.view.backgroundColor = .blackCustom
+            self.navigator.pushViewController(vc, animated: false)
+        }
+    }
+    
+    func startLoader(over viewController: UIViewController) {
+        LoaderBuilder.build { vc in
+            vc.view.backgroundColor = .blackCustom
+            vc.view.alpha = 0.9
+            vc.modalPresentationStyle = .overFullScreen
+            self.loaderVC = vc
+            viewController.present(vc, animated: false)
+        }
+    }
+    
+    func hideLoader() {
+        loaderVC?.stopAnimation()
+        loaderVC = nil
     }
     
     func openToTaskDetailScreen(_ id: Int64, _ title: String, _ desc: String, _ date: String) {

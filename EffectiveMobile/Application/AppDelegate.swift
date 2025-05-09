@@ -36,7 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             if let error = error as? NSError {
                 print("Error: \(error.localizedDescription)")
             } else {
-                print("DB url ->", desc.url ?? "Empty")
+                print("DB url ->", desc.url ?? "Empty", "\n")
             }
         }
         return container
