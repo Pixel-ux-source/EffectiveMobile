@@ -90,6 +90,7 @@ final class TaskController: UIViewController {
         tableDelegate.coordinator = coordinator
         dataSource.viewModel = viewModel
         tableDelegate.viewModel = viewModel
+        tableDelegate.controller = self
     }
     
     private func configureNavigationBar() {

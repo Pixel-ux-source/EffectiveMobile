@@ -47,6 +47,11 @@ final class AppCoordinator: CoordinatorProtocol {
         vc.view.backgroundColor = .blackCustom
         navigator.pushViewController(vc, animated: true)
     }
+    
+    func presentShareSheet(text: String, controller: UIViewController) {
+        let activityVC = UIActivityViewController(activityItems: [text], applicationActivities: nil)
+        controller.present(activityVC, animated: true)
+    }
 }
 
 extension AppCoordinator {

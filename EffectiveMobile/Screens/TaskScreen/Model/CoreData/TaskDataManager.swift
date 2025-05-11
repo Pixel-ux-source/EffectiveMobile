@@ -149,7 +149,7 @@ final class TaskDataManager {
     }
     
     // MARK: – Delete
-    func delete(with id: Int64) {
+    func delete(with id: Int64, completion: @escaping () -> ()) {
         container.performBackgroundTask { context in
             let fetchRequest: NSFetchRequest<Todos> = Todos.fetchRequest()
             fetchRequest.predicate = NSPredicate(format: "id = %id", id)
@@ -157,6 +157,7 @@ final class TaskDataManager {
             do {
                 guard let todo = try context.fetch(fetchRequest).first else { return }
                 context.delete(todo)
+                completion()
                 try context.save()
             } catch let error as NSError {
                 print("Error delete data: \(error.localizedDescription)")

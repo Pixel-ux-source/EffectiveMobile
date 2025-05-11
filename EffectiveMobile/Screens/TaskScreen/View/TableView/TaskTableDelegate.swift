@@ -15,6 +15,7 @@ final class TaskTableDelegate: NSObject, UITableViewDelegate {
     var coordinator: AppCoordinator!
     var viewModel: TaskViewModel!
     weak var delegate: TaskTableDelegateProtocol?
+    weak var controller: UIViewController?
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         UITableView.automaticDimension
@@ -29,21 +30,16 @@ final class TaskTableDelegate: NSObject, UITableViewDelegate {
                 cell.alpha = 1.0
             }
         }
-        tableView.deselectRow(at: indexPath, animated: false)
         
-        let item = viewModel.model[indexPath.row]
-        let title = item.title ?? ""
-        let desc = item.desc ?? ""
-        let date = item.createdAt.formattedDate()
-        let id = item.id
-        coordinator.openToTaskDetailScreen(id, title, desc, date)
+        tableView.deselectRow(at: indexPath, animated: false)
+        openDetail(for: indexPath)
     }
     
     func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
         let menu = UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ in
             UIMenu(title: "", children: [
                 UIAction(title: "Редактировать", image: UIImage(named: "edit"), handler: { _ in
-                    self.edit(at: indexPath)
+                    self.openDetail(for: indexPath)
                 }),
                 
                 UIAction(title: "Поделиться", image: UIImage(named: "export"), handler: { _ in
@@ -58,7 +54,7 @@ final class TaskTableDelegate: NSObject, UITableViewDelegate {
         return menu
     }
     
-    private func edit(at indexPath: IndexPath) {
+    private func openDetail(for indexPath: IndexPath) {
         let item = viewModel.model[indexPath.row]
         let title = item.title ?? ""
         let desc = item.desc ?? ""
@@ -68,17 +64,29 @@ final class TaskTableDelegate: NSObject, UITableViewDelegate {
     }
     
     private func share(at indexPath: IndexPath) {
+        let model = viewModel.model[indexPath.row]
+        let title = model.title ?? ""
+        let desc = model.desc ?? ""
+        let date = model.createdAt.formattedDate()
         
+        let note = """
+        \(title)
+        \(desc)
+        \(date)
+        """
+        
+        guard let controller else { return }
+        coordinator.presentShareSheet(text: note, controller: controller)
     }
 
     private func delete(at indexPath: IndexPath, _ tableView: UITableView) {
         let id = viewModel.model[indexPath.row].id
-        TaskDataManager.shared.delete(with: id)
-        DispatchQueue.main.async {
-            self.viewModel.model.remove(at: indexPath.row)
-            tableView.deleteRows(at: [indexPath], with: .automatic)
-            self.delegate?.didUpdateCount(at: self.viewModel.model.count)
+        TaskDataManager.shared.delete(with: id) {
+            DispatchQueue.main.async {
+                self.viewModel.model.remove(at: indexPath.row)
+                tableView.deleteRows(at: [indexPath], with: .automatic)
+                self.delegate?.didUpdateCount(at: self.viewModel.model.count)
+            }
         }
     }
-
 }
